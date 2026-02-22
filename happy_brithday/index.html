@@ -7,6 +7,44 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
+  /* カウントダウン */
+.countdown{
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: 'Playfair Display', serif;
+  font-size: 18vw;
+  font-weight: 700;
+  letter-spacing: .05em;
+
+  background: linear-gradient(90deg,
+    #ff004c, #ff8a00, #ffe600,
+    #00ff87, #00c8ff, #7a5cff, #ff3bd4
+  );
+  -webkit-background-clip:text;
+  background-clip:text;
+  color: transparent;
+
+  text-shadow: 0 8px 30px rgba(0,0,0,.45);
+
+  background-color: rgba(0,0,0,0.6);
+  z-index: 5000;
+  opacity: 0;
+}
+
+.countdown.show{
+  animation: countAnim 1s ease forwards;
+}
+
+@keyframes countAnim{
+  0%   { transform: scale(.6); opacity: 0; }
+  30%  { transform: scale(1.1); opacity: 1; }
+  80%  { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
   :root{
     --white:#ffffff;
     --line:rgba(255,255,255,.22);
@@ -49,7 +87,7 @@
     place-items:center;
     padding:24px;
   }
-  .hidden{ display:none; }
+  
 
   /* CLICK box */
   .clickBox{
@@ -171,12 +209,36 @@
     pointer-events:none;
   }
   .miniGuide.show{ opacity: 1; }
+
+  .hidden{ display:none; }
+
+  #flash{
+    position: fixed;
+    inset: 0;
+    background: white;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  #flash.flash{
+    animation: flashPop 420ms ease-out;
+  }
+
+  @keyframes flashPop{
+    0%   { opacity: 0; }
+    12%  { opacity: 0.85; }
+    100% { opacity: 0; }
+  }
+
 </style>
 </head>
 
 <body>
+  <div id="countdown" class="countdown hidden">3</div>
   <div class="aura"></div>
   <canvas id="fx"></canvas>
+  <div id="flash"></div>
 
   <!-- Screen 1 -->
   <div class="screen" id="screenClick">
@@ -196,23 +258,63 @@
   <div class="miniGuide" id="guide">周りをクリックすると花火が出るよ ✨</div>
 
 <script>
+  const flash = document.getElementById("flash");
+  function doFlash(){
+  flash.classList.remove("flash");
+  void flash.offsetWidth;
+  flash.classList.add("flash");
+}
+
+  const countdownEl = document.getElementById("countdown");
+
+function startCountdown(){
+  let count = 3;
+
+  countdownEl.classList.remove("hidden");
+
+  function showNumber(){
+    countdownEl.textContent = count;
+    countdownEl.classList.remove("show");
+    void countdownEl.offsetWidth; // 再アニメ用
+    countdownEl.classList.add("show");
+
+    count--;
+
+    if(count >= 1){
+      setTimeout(showNumber, 1000);
+    } else {
+      setTimeout(()=>{
+        countdownEl.classList.add("hidden");
+        launchBirthday();
+      }, 1000);
+    }
+  }
+
+  showNumber();
+}
   // --- screen switch ---
   const clickBox = document.getElementById("clickBox");
   const screenClick = document.getElementById("screenClick");
   const screenMsg = document.getElementById("screenMsg");
   const guide = document.getElementById("guide");
 
+  function launchBirthday(){
+  screenClick.classList.add("hidden");
+
+  doFlash(); // フラッシュ
+
+  screenMsg.classList.remove("hidden");
+  guide.classList.add("show");
+
+  fire(innerWidth*0.5, innerHeight*0.45, 150);
+}
   function goMessage(){
     // クリック画面を消してメッセージへ
     clickBox.style.opacity = "0";
     clickBox.style.pointerEvents = "none";
     setTimeout(()=>{
-      screenClick.classList.add("hidden");
-      screenMsg.classList.remove("hidden");
-      guide.classList.add("show");
-      // ちょい花火お試し
-      fire(innerWidth*0.5, innerHeight*0.45, 120);
-    }, 260);
+      startCountdown();
+    }, 300);
   }
 
   clickBox.addEventListener("click", goMessage);
