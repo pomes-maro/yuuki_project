@@ -16,7 +16,7 @@
   justify-content: center;
 
   font-family: 'Playfair Display', serif;
-  font-size: 18vw;
+  font-size: 20vw;
   font-weight: 900;
   letter-spacing: .05em;
 
@@ -149,6 +149,15 @@
     to{ opacity:1; transform: translateY(-10px); }
   }
 
+  .name{
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 4vw, 48px);
+  letter-spacing: .15em;
+  margin: 0 0 10px;
+  color: rgba(255,255,255,.9);
+  text-shadow: 0 8px 25px rgba(0,0,0,.6);
+}
+
   /* おしゃれ筆記体っぽい */
 .hb{
     font-family: 'Playfair Display', serif;
@@ -225,14 +234,67 @@
     100% { opacity: 0; }
   }
 
+  /* 左上ボタン */
+.secretBtn{
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 10px 18px;
+  font-size: 14px;
+  letter-spacing: .1em;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(0,0,0,.35);
+  color: #fff;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: all .25s ease;
+  z-index: 6000;
+}
+
+.secretBtn:hover{
+  background: rgba(255,255,255,.15);
+  transform: translateY(-2px);
+}
+
+/* ポップアップ */
+.giftPopup{
+  position: fixed;
+  top: 80px;
+  left: 20px;
+  padding: 18px 26px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.25);
+  backdrop-filter: blur(15px);
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: .1em;
+  animation: fadeIn .5s ease forwards;
+  z-index: 6000;
+}
+
+@keyframes fadeIn{
+  from{ opacity:0; transform: translateY(-10px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+
 </style>
 </head>
 
 <body>
+
   <div id="countdown" class="countdown hidden">3</div>
   <div class="aura"></div>
+  <button class="secretBtn hidden" id="secretBtn">🎁 秘密のギフト</button>
+
+<div class="giftPopup hidden" id="giftPopup">
+  🎉 肩たたき券プレゼント 🎉
+</div>
+
   <canvas id="fx"></canvas>
   <div id="flash"></div>
+
 
   <!-- Screen 1 -->
   <div class="screen" id="screenClick">
@@ -244,12 +306,13 @@
   <!-- Screen 2 -->
   <div class="screen hidden" id="screenMsg">
     <div class="msgWrap">
+      <h2 class="name">MASAKO</h2>
       <h1 class="hb">Happy Birthday</h1>
       <p class="sub">素敵な一年にしてね</p>
     </div>
   </div>
 
-  <div class="miniGuide" id="guide">周りをクリックすると花火が出るよ ✨</div>
+  <div class="miniGuide" id="guide">周りをクリックすると花火が出るよ </div>
 
 <script>
   const flash = document.getElementById("flash");
@@ -291,6 +354,8 @@ function startCountdown(){
   const screenClick = document.getElementById("screenClick");
   const screenMsg = document.getElementById("screenMsg");
   const guide = document.getElementById("guide");
+  const secretBtn = document.getElementById("secretBtn");
+  const giftPopup = document.getElementById("giftPopup");
 
   function launchBirthday(){
   screenClick.classList.add("hidden");
@@ -299,6 +364,9 @@ function startCountdown(){
 
   screenMsg.classList.remove("hidden");
   guide.classList.add("show");
+
+  secretBtn.classList.remove("hidden");
+  giftPopup.classList.add("hidden");
 
   fire(innerWidth*0.5, innerHeight*0.45, 150);
 }
@@ -389,6 +457,11 @@ function startCountdown(){
     // 文字の上でもOK（どこでも花火）
     fire(e.clientX, e.clientY, 150);
   });
+
+
+secretBtn.addEventListener("click", ()=>{
+  giftPopup.classList.toggle("hidden");
+});
 </script>
 </body>
 </html>
