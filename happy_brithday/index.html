@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday</title>
+  <meta name="theme-color" content="#0b0b12" />
+  <style>
+    :root{
+      --bg1:#0b0b12; --bg2:#140b2a; --a:#8cf; --b:#ff7ad9; --c:#ffe08a;
+      --card: rgba(255,255,255,.08); --line: rgba(255,255,255,.14);
+      --text: rgba(255,255,255,.92); --muted: rgba(255,255,255,.65);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 15% 10%, rgba(140,204,255,.18), transparent 60%),
+        radial-gradient(900px 700px at 80% 30%, rgba(255,122,217,.16), transparent 55%),
+        radial-gradient(700px 700px at 50% 95%, rgba(255,224,138,.10), transparent 55%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+    .wrap{
+      min-height:100%;
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+    .card{
+      width:min(720px, 92vw);
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow: 0 20px 80px rgba(0,0,0,.45);
+      backdrop-filter: blur(10px);
+      padding:28px 26px;
+      position:relative;
+      overflow:hidden;
+    }
+    .shine{
+      position:absolute; inset:-120px;
+      background: conic-gradient(from 180deg,
+        rgba(140,204,255,.00), rgba(140,204,255,.18),
+        rgba(255,122,217,.18), rgba(255,224,138,.14),
+        rgba(140,204,255,.00)
+      );
+      filter: blur(30px);
+      animation: spin 10s linear infinite;
+      opacity:.65;
+      pointer-events:none;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .content{position:relative}
+    .kicker{
+      font-size:14px; letter-spacing:.14em; text-transform:uppercase;
+      color:var(--muted);
+    }
+    h1{
+      margin:10px 0 8px;
+      font-size: clamp(34px, 5vw, 56px);
+      line-height:1.05;
+      letter-spacing:-.02em;
+    }
+    .grad{
+      background: linear-gradient(90deg, var(--a), var(--b), var(--c));
+      -webkit-background-clip:text; background-clip:text;
+      color:transparent;
+    }
+    .sub{
+      margin: 6px 0 18px;
+      color:var(--muted);
+      font-size: clamp(14px, 2.2vw, 16px);
+      line-height:1.7;
+    }
+    .btnrow{
+      display:flex; gap:12px; flex-wrap:wrap;
+      margin-top:16px;
+    }
+    button{
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      color:var(--text);
+      padding:12px 14px;
+      border-radius:14px;
+      font-weight:600;
+      cursor:pointer;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
+    }
+    button:hover{background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.30)}
+    button:active{transform: translateY(1px) scale(.99)}
+    .small{
+      font-size:12px; color:var(--muted); margin-top:10px
+    }
+    .toast{
+      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(255,255,255,.18);
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:13px;
+      opacity:0; pointer-events:none;
+      transition: opacity .25s ease, transform .25s ease;
+      backdrop-filter: blur(10px);
+    }
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(-6px)}
+    canvas{position:fixed; inset:0; pointer-events:none}
+    .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      font-size:13px;
+    }
+    .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: linear-gradient(90deg, var(--a), var(--b));
+      box-shadow: 0 0 12px rgba(140,204,255,.35);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="fx"></canvas>
+
+  <div class="wrap">
+    <div class="card">
+      <div class="shine"></div>
+      <div class="content">
+        <div class="tag"><span class="dot"></span><span>Tap / Click to celebrate</span></div>
+
+        <div class="kicker">Special day</div>
+        <h1 class="grad">Happy Birthday</h1>
+        <p class="sub" id="msg">
+          最高の1年になりますように。<br>
+          今日は主役。クリックしたら…ちょっとした演出が出るよ。
+        </p>
+
+        <div class="btnrow">
+          <button id="celebrate">🎉 祝う（クリック）</button>
+          <button id="toggle">💌 メッセージを変える</button>
+        </div>
+        <div class="small">※スマホでもOK。音は出ません（静かにおしゃれ）。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">🎂 おめでとう！！</div>
+
+  <script>
+    // ▼ここだけ変えれば、名前入りにできる
+    const NAME = "〇〇"; // 例: "Yuki"
+    const MESSAGES = [
+      `${NAME}へ。お誕生日おめでとう！今日が最高の日になりますように。`,
+      `これからの1年、笑うことが増えますように。いつもありがとう。`,
+      `健康第一！やりたいこと全部やっていこう。おめでとう🎉`,
+    ];
+
+    const msgEl = document.getElementById("msg");
+    const toast = document.getElementById("toast");
+    const btn = document.getElementById("celebrate");
+    const toggle = document.getElementById("toggle");
+
+    let mi = 0;
+    toggle.addEventListener("click", () => {
+      mi = (mi + 1) % MESSAGES.length;
+      msgEl.innerHTML = MESSAGES[mi].replaceAll("\n","<br>");
+      popToast("💌 メッセージ切り替え！");
+    });
+
+    // --- Confetti ---
+    const canvas = document.getElementById("fx");
+    const ctx = canvas.getContext("2d");
+    let W,H;
+    function resize(){
+      W = canvas.width = window.innerWidth * devicePixelRatio;
+      H = canvas.height = window.innerHeight * devicePixelRatio;
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+    }
+    window.addEventListener("resize", () => location.reload());
+    resize();
+
+    const rand = (a,b)=>Math.random()*(b-a)+a;
+    const colors = ["#8cf","#ff7ad9","#ffe08a","#b6ffea","#c7a6ff"];
+
+    let particles = [];
+    function burst(x,y,count=160){
+      for(let i=0;i<count;i++){
+        particles.push({
+          x, y,
+          vx: rand(-6,6),
+          vy: rand(-10,-2),
+          g: rand(0.10,0.22),
+          r: rand(2,5),
+          rot: rand(0,Math.PI),
+          vr: rand(-0.2,0.2),
+          c: colors[(Math.random()*colors.length)|0],
+          life: rand(60,120)
+        });
+      }
+    }
+
+    function step(){
+      ctx.clearRect(0,0,innerWidth,innerHeight);
+      for(let i=particles.length-1;i>=0;i--){
+        const p = particles[i];
+        p.vy += p.g;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.life -= 1;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.c;
+        ctx.globalAlpha = Math.max(0, Math.min(1, p.life/80));
+        ctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
+        ctx.restore();
+
+        if(p.life<=0 || p.y>innerHeight+40) particles.splice(i,1);
+      }
+      requestAnimationFrame(step);
+    }
+    step();
+
+    function popToast(text){
+      toast.textContent = text;
+      toast.classList.add("show");
+      setTimeout(()=>toast.classList.remove("show"), 1100);
+    }
+
+    function celebrateAt(cx,cy){
+      burst(cx,cy,180);
+      popToast("🎂 おめでとう！！");
+      // 見た目だけの小演出：タイトル揺れ
+      document.querySelector("h1").animate(
+        [{transform:"scale(1)"},
+         {transform:"scale(1.02)"},
+         {transform:"scale(1)"}],
+        {duration:420, easing:"ease-out"}
+      );
+    }
+
+    btn.addEventListener("click", (e)=>{
+      const rect = btn.getBoundingClientRect();
+      celebrateAt(rect.left + rect.width/2, rect.top);
+    });
+
+    // 画面クリックでも反応
+    window.addEventListener("pointerdown", (e)=>{
+      // ボタン以外の場所ならクリック位置で演出
+      if(!e.target.closest("button")){
+        celebrateAt(e.clientX, e.clientY);
+      }
+    });
+
+    // 初回は名前反映
+    msgEl.innerHTML = MESSAGES[0].replaceAll("\n","<br>");
+  </script>
+</body>
+</html>
