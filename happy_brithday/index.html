@@ -1,267 +1,299 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Happy Birthday</title>
-  <meta name="theme-color" content="#0b0b12" />
-  <style>
-    :root{
-      --bg1:#0b0b12; --bg2:#140b2a; --a:#8cf; --b:#ff7ad9; --c:#ffe08a;
-      --card: rgba(255,255,255,.08); --line: rgba(255,255,255,.14);
-      --text: rgba(255,255,255,.92); --muted: rgba(255,255,255,.65);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(1200px 800px at 15% 10%, rgba(140,204,255,.18), transparent 60%),
-        radial-gradient(900px 700px at 80% 30%, rgba(255,122,217,.16), transparent 55%),
-        radial-gradient(700px 700px at 50% 95%, rgba(255,224,138,.10), transparent 55%),
-        linear-gradient(160deg, var(--bg1), var(--bg2));
-      overflow:hidden;
-    }
-    .wrap{
-      min-height:100%;
-      display:grid;
-      place-items:center;
-      padding:24px;
-    }
-    .card{
-      width:min(720px, 92vw);
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:24px;
-      box-shadow: 0 20px 80px rgba(0,0,0,.45);
-      backdrop-filter: blur(10px);
-      padding:28px 26px;
-      position:relative;
-      overflow:hidden;
-    }
-    .shine{
-      position:absolute; inset:-120px;
-      background: conic-gradient(from 180deg,
-        rgba(140,204,255,.00), rgba(140,204,255,.18),
-        rgba(255,122,217,.18), rgba(255,224,138,.14),
-        rgba(140,204,255,.00)
-      );
-      filter: blur(30px);
-      animation: spin 10s linear infinite;
-      opacity:.65;
-      pointer-events:none;
-    }
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .content{position:relative}
-    .kicker{
-      font-size:14px; letter-spacing:.14em; text-transform:uppercase;
-      color:var(--muted);
-    }
-    h1{
-      margin:10px 0 8px;
-      font-size: clamp(34px, 5vw, 56px);
-      line-height:1.05;
-      letter-spacing:-.02em;
-    }
-    .grad{
-      background: linear-gradient(90deg, var(--a), var(--b), var(--c));
-      -webkit-background-clip:text; background-clip:text;
-      color:transparent;
-    }
-    .sub{
-      margin: 6px 0 18px;
-      color:var(--muted);
-      font-size: clamp(14px, 2.2vw, 16px);
-      line-height:1.7;
-    }
-    .btnrow{
-      display:flex; gap:12px; flex-wrap:wrap;
-      margin-top:16px;
-    }
-    button{
-      border:1px solid rgba(255,255,255,.22);
-      background: rgba(255,255,255,.10);
-      color:var(--text);
-      padding:12px 14px;
-      border-radius:14px;
-      font-weight:600;
-      cursor:pointer;
-      transition: transform .08s ease, background .2s ease, border-color .2s ease;
-      user-select:none;
-    }
-    button:hover{background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.30)}
-    button:active{transform: translateY(1px) scale(.99)}
-    .small{
-      font-size:12px; color:var(--muted); margin-top:10px
-    }
-    .toast{
-      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
-      background: rgba(0,0,0,.55);
-      border: 1px solid rgba(255,255,255,.18);
-      padding:10px 12px;
-      border-radius:999px;
-      font-size:13px;
-      opacity:0; pointer-events:none;
-      transition: opacity .25s ease, transform .25s ease;
-      backdrop-filter: blur(10px);
-    }
-    .toast.show{opacity:1; transform:translateX(-50%) translateY(-6px)}
-    canvas{position:fixed; inset:0; pointer-events:none}
-    .tag{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color: var(--muted);
-      font-size:13px;
-    }
-    .dot{
-      width:8px; height:8px; border-radius:50%;
-      background: linear-gradient(90deg, var(--a), var(--b));
-      box-shadow: 0 0 12px rgba(140,204,255,.35);
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Birthday</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --white:#ffffff;
+    --line:rgba(255,255,255,.22);
+    --glass:rgba(255,255,255,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    overflow:hidden;
+    background:
+      radial-gradient(900px 700px at 20% 20%, rgba(160,220,255,.18), transparent 55%),
+      radial-gradient(900px 700px at 80% 35%, rgba(255,150,220,.14), transparent 60%),
+      radial-gradient(700px 700px at 50% 95%, rgba(255,235,170,.10), transparent 55%),
+      linear-gradient(160deg, #05050c, #0b0620 55%, #070814);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    color: rgba(255,255,255,.92);
+  }
+
+  /* 背景のうっすら光 */
+  .aura{
+    position:fixed; inset:-140px;
+    background: conic-gradient(from 180deg,
+      rgba(255,255,255,0),
+      rgba(160,220,255,.14),
+      rgba(255,150,220,.12),
+      rgba(255,235,170,.10),
+      rgba(255,255,255,0)
+    );
+    filter: blur(45px);
+    opacity:.55;
+    animation: spin 10s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* 画面レイヤ */
+  .screen{
+    position:fixed; inset:0;
+    display:grid;
+    place-items:center;
+    padding:24px;
+  }
+  .hidden{ display:none; }
+
+  /* CLICK box */
+  .clickBox{
+    width: min(560px, 88vw);
+    height: 170px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius: 22px;
+    border: 1px solid var(--line);
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 28px 90px rgba(0,0,0,.55);
+    cursor:pointer;
+    user-select:none;
+    position:relative;
+    transition: transform .18s ease, background .25s ease, border-color .25s ease, opacity .35s ease;
+    outline:none;
+  }
+  .clickBox::before{
+    content:"";
+    position:absolute; inset:-1px;
+    border-radius: 22px;
+    background: linear-gradient(120deg,
+      rgba(255,255,255,.22),
+      rgba(255,255,255,0) 35%,
+      rgba(255,255,255,.14) 70%,
+      rgba(255,255,255,0)
+    );
+    opacity:.35;
+    pointer-events:none;
+    mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+    -webkit-mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+    padding:1px;
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+  }
+  .clickBox:hover{
+    transform: translateY(-2px);
+    background: rgba(255,255,255,.08);
+    border-color: rgba(255,255,255,.30);
+  }
+  .clickBox:active{ transform: translateY(0px) scale(.995); }
+  .clickText{
+    font-size: clamp(52px, 8.5vw, 104px);
+    font-weight: 800;
+    letter-spacing: .18em;
+    color: #fff;
+    text-transform: uppercase;
+    line-height:1;
+    text-shadow:
+      0 1px 0 rgba(255,255,255,.12),
+      0 12px 40px rgba(0,0,0,.55);
+  }
+
+  /* メッセージ画面 */
+  .msgWrap{
+    text-align:center;
+    transform: translateY(-10px);
+    animation: rise .7s ease-out both;
+    padding: 10px 12px;
+  }
+  @keyframes rise{
+    from{ opacity:0; transform: translateY(10px); }
+    to{ opacity:1; transform: translateY(-10px); }
+  }
+
+  /* おしゃれ筆記体っぽい */
+.hb{
+    font-family: 'Great Vibes', cursive;
+  font-size: clamp(64px, 9vw, 110px);
+  letter-spacing: .03em;
+  margin: 0 0 14px;
+  line-height: 1.1;
+
+  background: linear-gradient(90deg,
+    #ff004c, #ff8a00, #ffe600, #00ff87, #00c8ff, #7a5cff, #ff3bd4
+  );
+  -webkit-background-clip:text;
+  background-clip:text;
+  color: transparent;
+
+  text-shadow:
+    0 6px 25px rgba(0,0,0,.45),
+    0 0 20px rgba(255,255,255,.15);
+
+  }
+
+  .sub{
+    margin: 0;
+    font-size: clamp(16px, 2.4vw, 18px);
+    color: rgba(255,255,255,.82);
+    letter-spacing: .04em;
+    text-shadow: 0 10px 30px rgba(0,0,0,.55);
+  }
+
+  /* 花火キャンバス */
+  canvas#fx{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+  }
+
+  /* ちょいガイド（邪魔なら消してOK） */
+  .miniGuide{
+    position:fixed;
+    left:50%;
+    bottom:18px;
+    transform:translateX(-50%);
+    font-size:12px;
+    color: rgba(255,255,255,.55);
+    background: rgba(0,0,0,.35);
+    border: 1px solid rgba(255,255,255,.12);
+    padding: 8px 10px;
+    border-radius: 999px;
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: opacity .4s ease;
+    pointer-events:none;
+  }
+  .miniGuide.show{ opacity: 1; }
+</style>
 </head>
+
 <body>
+  <div class="aura"></div>
   <canvas id="fx"></canvas>
 
-  <div class="wrap">
-    <div class="card">
-      <div class="shine"></div>
-      <div class="content">
-        <div class="tag"><span class="dot"></span><span>Tap / Click to celebrate</span></div>
-
-        <div class="kicker">Special day</div>
-        <h1 class="grad">Happy Birthday</h1>
-        <p class="sub" id="msg">
-          最高の1年になりますように。<br>
-          今日は主役。クリックしたら…ちょっとした演出が出るよ。
-        </p>
-
-        <div class="btnrow">
-          <button id="celebrate">🎉 祝う（クリック）</button>
-          <button id="toggle">💌 メッセージを変える</button>
-        </div>
-        <div class="small">※スマホでもOK。音は出ません（静かにおしゃれ）。</div>
-      </div>
+  <!-- Screen 1 -->
+  <div class="screen" id="screenClick">
+    <div class="clickBox" id="clickBox" role="button" tabindex="0" aria-label="click">
+      <div class="clickText">CLICK</div>
     </div>
   </div>
 
-  <div class="toast" id="toast">🎂 おめでとう！！</div>
+  <!-- Screen 2 -->
+  <div class="screen hidden" id="screenMsg">
+    <div class="msgWrap">
+      <h1 class="hb">Happy Birthday</h1>
+      <p class="sub">素敵な一年にしてね</p>
+    </div>
+  </div>
 
-  <script>
-    // ▼ここだけ変えれば、名前入りにできる
-    const NAME = "〇〇"; // 例: "Yuki"
-    const MESSAGES = [
-      `${NAME}へ。お誕生日おめでとう！今日が最高の日になりますように。`,
-      `これからの1年、笑うことが増えますように。いつもありがとう。`,
-      `健康第一！やりたいこと全部やっていこう。おめでとう🎉`,
-    ];
+  <div class="miniGuide" id="guide">周りをクリックすると花火が出るよ ✨</div>
 
-    const msgEl = document.getElementById("msg");
-    const toast = document.getElementById("toast");
-    const btn = document.getElementById("celebrate");
-    const toggle = document.getElementById("toggle");
+<script>
+  // --- screen switch ---
+  const clickBox = document.getElementById("clickBox");
+  const screenClick = document.getElementById("screenClick");
+  const screenMsg = document.getElementById("screenMsg");
+  const guide = document.getElementById("guide");
 
-    let mi = 0;
-    toggle.addEventListener("click", () => {
-      mi = (mi + 1) % MESSAGES.length;
-      msgEl.innerHTML = MESSAGES[mi].replaceAll("\n","<br>");
-      popToast("💌 メッセージ切り替え！");
-    });
+  function goMessage(){
+    // クリック画面を消してメッセージへ
+    clickBox.style.opacity = "0";
+    clickBox.style.pointerEvents = "none";
+    setTimeout(()=>{
+      screenClick.classList.add("hidden");
+      screenMsg.classList.remove("hidden");
+      guide.classList.add("show");
+      // ちょい花火お試し
+      fire(innerWidth*0.5, innerHeight*0.45, 120);
+    }, 260);
+  }
 
-    // --- Confetti ---
-    const canvas = document.getElementById("fx");
-    const ctx = canvas.getContext("2d");
-    let W,H;
-    function resize(){
-      W = canvas.width = window.innerWidth * devicePixelRatio;
-      H = canvas.height = window.innerHeight * devicePixelRatio;
-      ctx.scale(devicePixelRatio, devicePixelRatio);
+  clickBox.addEventListener("click", goMessage);
+  clickBox.addEventListener("keydown",(e)=>{
+    if(e.key==="Enter" || e.key===" "){ e.preventDefault(); goMessage(); }
+  });
+
+  // --- Fireworks / Confetti-ish particles ---
+  const canvas = document.getElementById("fx");
+  const ctx = canvas.getContext("2d");
+
+  let W=0, H=0, DPR=1;
+  function resize(){
+    DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    W = canvas.width = Math.floor(window.innerWidth * DPR);
+    H = canvas.height = Math.floor(window.innerHeight * DPR);
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  const particles = [];
+  const rand = (a,b)=>Math.random()*(b-a)+a;
+
+  // 鮮やかな虹色パレット
+  const palette = ["#ff004c","#ff8a00","#ffe600","#00ff87","#00c8ff","#7a5cff","#ff3bd4"];
+
+  function fire(x,y,count=140){
+    for(let i=0;i<count;i++){
+      const sp = rand(2.6, 8.2);
+      const ang = rand(0, Math.PI*2);
+      particles.push({
+        x, y,
+        vx: Math.cos(ang)*sp,
+        vy: Math.sin(ang)*sp,
+        g: rand(0.06, 0.16),
+        r: rand(1.8, 3.8),
+        life: rand(40, 85),
+        c: palette[(Math.random()*palette.length)|0],
+      });
     }
-    window.addEventListener("resize", () => location.reload());
-    resize();
+  }
 
-    const rand = (a,b)=>Math.random()*(b-a)+a;
-    const colors = ["#8cf","#ff7ad9","#ffe08a","#b6ffea","#c7a6ff"];
+  function tick(){
+    ctx.clearRect(0,0,innerWidth,innerHeight);
 
-    let particles = [];
-    function burst(x,y,count=160){
-      for(let i=0;i<count;i++){
-        particles.push({
-          x, y,
-          vx: rand(-6,6),
-          vy: rand(-10,-2),
-          g: rand(0.10,0.22),
-          r: rand(2,5),
-          rot: rand(0,Math.PI),
-          vr: rand(-0.2,0.2),
-          c: colors[(Math.random()*colors.length)|0],
-          life: rand(60,120)
-        });
+    for(let i=particles.length-1;i>=0;i--){
+      const p = particles[i];
+      p.vy += p.g;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 1;
+
+      const a = Math.max(0, Math.min(1, p.life/70));
+      ctx.globalAlpha = a;
+      ctx.fillStyle = p.c;
+
+      // 小さな丸（花火の粒）
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fill();
+
+      if(p.life<=0 || p.y>innerHeight+60 || p.x<-60 || p.x>innerWidth+60){
+        particles.splice(i,1);
       }
     }
 
-    function step(){
-      ctx.clearRect(0,0,innerWidth,innerHeight);
-      for(let i=particles.length-1;i>=0;i--){
-        const p = particles[i];
-        p.vy += p.g;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.rot += p.vr;
-        p.life -= 1;
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(tick);
+  }
+  tick();
 
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rot);
-        ctx.fillStyle = p.c;
-        ctx.globalAlpha = Math.max(0, Math.min(1, p.life/80));
-        ctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
-        ctx.restore();
-
-        if(p.life<=0 || p.y>innerHeight+40) particles.splice(i,1);
-      }
-      requestAnimationFrame(step);
-    }
-    step();
-
-    function popToast(text){
-      toast.textContent = text;
-      toast.classList.add("show");
-      setTimeout(()=>toast.classList.remove("show"), 1100);
-    }
-
-    function celebrateAt(cx,cy){
-      burst(cx,cy,180);
-      popToast("🎂 おめでとう！！");
-      // 見た目だけの小演出：タイトル揺れ
-      document.querySelector("h1").animate(
-        [{transform:"scale(1)"},
-         {transform:"scale(1.02)"},
-         {transform:"scale(1)"}],
-        {duration:420, easing:"ease-out"}
-      );
-    }
-
-    btn.addEventListener("click", (e)=>{
-      const rect = btn.getBoundingClientRect();
-      celebrateAt(rect.left + rect.width/2, rect.top);
-    });
-
-    // 画面クリックでも反応
-    window.addEventListener("pointerdown", (e)=>{
-      // ボタン以外の場所ならクリック位置で演出
-      if(!e.target.closest("button")){
-        celebrateAt(e.clientX, e.clientY);
-      }
-    });
-
-    // 初回は名前反映
-    msgEl.innerHTML = MESSAGES[0].replaceAll("\n","<br>");
-  </script>
+  // 周りをクリックで花火（メッセージ画面だけで反応）
+  window.addEventListener("pointerdown", (e)=>{
+    if(screenMsg.classList.contains("hidden")) return;
+    // 文字の上でもOK（どこでも花火）
+    fire(e.clientX, e.clientY, 150);
+  });
+</script>
 </body>
 </html>
