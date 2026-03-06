@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>nazo</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  /* カウントダウン */
+.countdown{
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: 'Playfair Display', serif;
+  font-size: 20vw;
+  font-weight: 900;
+  letter-spacing: .05em;
+
+  color: #fff;
+
+  text-shadow: 0 8px 30px rgba(0,0,0,.45);
+
+  background-color: rgba(0,0,0,0.6);
+  z-index: 5000;
+  opacity: 0;
+}
+
+.countdown.show{
+  animation: countAnim 1s ease forwards;
+}
+
+@keyframes countAnim{
+  0%   { transform: scale(.6); opacity: 0; }
+  30%  { transform: scale(1.1); opacity: 1; }
+  80%  { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+  :root{
+    --white:#ffffff;
+    --line:rgba(255,255,255,.22);
+    --glass:rgba(255,255,255,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    overflow:hidden;
+    background:
+      radial-gradient(900px 700px at 20% 20%, rgba(160,220,255,.18), transparent 55%),
+      radial-gradient(900px 700px at 80% 35%, rgba(255,150,220,.14), transparent 60%),
+      radial-gradient(700px 700px at 50% 95%, rgba(255,235,170,.10), transparent 55%),
+      linear-gradient(160deg, #05050c, #0b0620 55%, #070814);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    color: rgba(255,255,255,.92);
+  }
+
+  /* 背景のうっすら光   */
+  .aura{
+    position:fixed; inset:-140px;
+    background: conic-gradient(from 180deg,
+      rgba(255,255,255,0),
+      rgba(160,220,255,.14),
+      rgba(255,150,220,.12),
+      rgba(255,235,170,.10),
+      rgba(255,255,255,0)
+    );
+    filter: blur(45px);
+    opacity:.55;
+    animation: spin 10s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* 画面レイヤ */
+  .screen{
+    position:fixed; inset:0;
+    display:grid;
+    place-items:center;
+    padding:24px;
+  }
+  
+
+  /* CLICK box */
+  .clickBox{
+    width: min(560px, 88vw);
+    height: 170px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius: 22px;
+    border: 1px solid var(--line);
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 28px 90px rgba(0,0,0,.55);
+    cursor:pointer;
+    user-select:none;
+    position:relative;
+    transition: transform .18s ease, background .25s ease, border-color .25s ease, opacity .35s ease;
+    outline:none;
+  }
+  .clickBox::before{
+    content:"";
+    position:absolute; inset:-1px;
+    border-radius: 22px;
+    background: linear-gradient(120deg,
+      rgba(255,255,255,.22),
+      rgba(255,255,255,0) 35%,
+      rgba(255,255,255,.14) 70%,
+      rgba(255,255,255,0)
+    );
+    opacity:.35;
+    pointer-events:none;
+    mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+    -webkit-mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+    padding:1px;
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+  }
+  .clickBox:hover{
+    transform: translateY(-2px);
+    background: rgba(255,255,255,.08);
+    border-color: rgba(255,255,255,.30);
+  }
+  .clickBox:active{ transform: translateY(0px) scale(.995); }
+  .clickText{
+    font-size: clamp(52px, 8.5vw, 104px);
+    font-weight: 800;
+    letter-spacing: .18em;
+    color: #fff;
+    text-transform: uppercase;
+    line-height:1;
+    text-shadow:
+      0 1px 0 rgba(255,255,255,.12),
+      0 12px 40px rgba(0,0,0,.55);
+  }
+
+  /* メッセージ画面 */
+  .msgWrap{
+    text-align:center;
+    transform: translateY(-10px);
+    animation: rise .7s ease-out both;
+    padding: 10px 12px;
+  }
+  @keyframes rise{
+    from{ opacity:0; transform: translateY(10px); }
+    to{ opacity:1; transform: translateY(-10px); }
+  }
+
+  .name{
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 4vw, 48px);
+  letter-spacing: .15em;
+  margin: 0 0 10px;
+  color: rgba(255,255,255,.9);
+  text-shadow: 0 8px 25px rgba(0,0,0,.6);
+}
+
+  /* おしゃれ筆記体っぽい */
+.hb{
+    font-family: 'Playfair Display', serif;
+  font-size: clamp(64px, 9vw, 110px);
+  font-weight: 700;
+  letter-spacing: .05em;
+  margin: 0 0 18px;
+  line-height: 1.1;
+
+  background: linear-gradient(90deg,
+    #ff004c, #ff8a00, #ffe600,
+    #00ff87, #00c8ff, #7a5cff, #ff3bd4
+  );
+  -webkit-background-clip:text;
+  background-clip:text;
+  color: transparent;
+
+  text-shadow: 0 8px 30px rgba(0,0,0,.45);
+
+  }
+
+  .sub{
+    margin: 0;
+    font-size: clamp(16px, 2.4vw, 18px);
+    color: rgba(255,255,255,.82);
+    letter-spacing: .04em;
+    text-shadow: 0 10px 30px rgba(0,0,0,.55);
+  }
+
+  /* 花火キャンバス */
+  canvas#fx{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+  }
+
+  /* ちょいガイド（邪魔なら消してOK） */
+  .miniGuide{
+    position:fixed;
+    left:50%;
+    bottom:18px;
+    transform:translateX(-50%);
+    font-size:12px;
+    color: rgba(255,255,255,.55);
+    background: rgba(0,0,0,.35);
+    border: 1px solid rgba(255,255,255,.12);
+    padding: 8px 10px;
+    border-radius: 999px;
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: opacity .4s ease;
+    pointer-events:none;
+  }
+  .miniGuide.show{ opacity: 1; }
+
+  .hidden{ display:none; }
+
+  #flash{
+    position: fixed;
+    inset: 0;
+    background: white;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  #flash.flash{
+    animation: flashPop 420ms ease-out;
+  }
+
+  @keyframes flashPop{
+    0%   { opacity: 0; }
+    12%  { opacity: 0.85; }
+    100% { opacity: 0; }
+  }
+
+  /* 左上ボタン */
+.secretBtn{
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 10px 18px;
+  font-size: 14px;
+  letter-spacing: .1em;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(0,0,0,.35);
+  color: #fff;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: all .25s ease;
+  z-index: 6000;
+}
+
+.secretBtn:hover{
+  background: rgba(255,255,255,.15);
+  transform: translateY(-2px);
+}
+
+/* ポップアップ */
+.giftPopup{
+  position: fixed;
+  top: 80px;
+  left: 20px;
+  padding: 18px 26px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.25);
+  backdrop-filter: blur(15px);
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: .1em;
+  animation: fadeIn .5s ease forwards;
+  z-index: 6000;
+}
+
+@keyframes fadeIn{
+  from{ opacity:0; transform: translateY(-10px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+
+</style>
+</head>
+
+<body>
+
+  <div id="countdown" class="countdown hidden">3</div>
+  <div class="aura"></div>
+  <button class="secretBtn hidden" id="secretBtn">🎁 秘密のギフト</button>
+
+<div class="giftPopup hidden" id="giftPopup">
+  🎉 僕の乳首の写真プレゼント券 🎉
+</div>
+
+  <canvas id="fx"></canvas>
+  <div id="flash"></div>
+
+
+  <!-- Screen 1 -->
+  <div class="screen" id="screenClick">
+    <div class="clickBox" id="clickBox" role="button" tabindex="0" aria-label="click">
+      <div class="clickText">CLICK</div>
+    </div>
+  </div>
+
+  <!-- Screen 2 -->
+  <div class="screen hidden" id="screenMsg">
+    <div class="msgWrap">
+      <h2 class="name">HIROTO aka NORIKO</h2>
+      <h1 class="hb">Happy Birthday</h1>
+      <p class="sub">素敵な一年にしてね</p>
+    </div>
+  </div>
+
+  <div class="miniGuide" id="guide">周りをクリックすると花火が出るよ </div>
+
+<script>
+  const flash = document.getElementById("flash");
+  function doFlash(){
+  flash.classList.remove("flash");
+  void flash.offsetWidth;
+  flash.classList.add("flash");
+}
+
+  const countdownEl = document.getElementById("countdown");
+
+function startCountdown(){
+  let count = 3;
+
+  countdownEl.classList.remove("hidden");
+
+  function showNumber(){
+    countdownEl.textContent = count;
+    countdownEl.classList.remove("show");
+    void countdownEl.offsetWidth; // 再アニメ用
+    countdownEl.classList.add("show");
+
+    count--;
+
+    if(count >= 1){
+      setTimeout(showNumber, 1000);
+    } else {
+      setTimeout(()=>{
+        countdownEl.classList.add("hidden");
+        launchBirthday();
+      }, 1000);
+    }
+  }
+
+  showNumber();
+}
+  // --- screen switch ---
+  const clickBox = document.getElementById("clickBox");
+  const screenClick = document.getElementById("screenClick");
+  const screenMsg = document.getElementById("screenMsg");
+  const guide = document.getElementById("guide");
+  const secretBtn = document.getElementById("secretBtn");
+  const giftPopup = document.getElementById("giftPopup");
+
+  function launchBirthday(){
+  screenClick.classList.add("hidden");
+
+  doFlash(); // フラッシュ
+
+  screenMsg.classList.remove("hidden");
+  guide.classList.add("show");
+
+  secretBtn.classList.remove("hidden");
+  giftPopup.classList.add("hidden");
+
+  fire(innerWidth*0.5, innerHeight*0.45, 150);
+}
+  function goMessage(){
+    // クリック画面を消してメッセージへ
+    clickBox.style.opacity = "0";
+    clickBox.style.pointerEvents = "none";
+    setTimeout(()=>{
+      startCountdown();
+    }, 300);
+  }
+
+  clickBox.addEventListener("click", goMessage);
+  clickBox.addEventListener("keydown",(e)=>{
+    if(e.key==="Enter" || e.key===" "){ e.preventDefault(); goMessage(); }
+  });
+
+  // --- Fireworks / Confetti-ish particles ---
+  const canvas = document.getElementById("fx");
+  const ctx = canvas.getContext("2d");
+
+  let W=0, H=0, DPR=1;
+  function resize(){
+    DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    W = canvas.width = Math.floor(window.innerWidth * DPR);
+    H = canvas.height = Math.floor(window.innerHeight * DPR);
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  const particles = [];
+  const rand = (a,b)=>Math.random()*(b-a)+a;
+
+  // 鮮やかな虹色パレット
+  const palette = ["#ff004c","#ff8a00","#ffe600","#00ff87","#00c8ff","#7a5cff","#ff3bd4"];
+
+  function fire(x,y,count=140){
+    for(let i=0;i<count;i++){
+      const sp = rand(2.6, 8.2);
+      const ang = rand(0, Math.PI*2);
+      particles.push({
+        x, y,
+        vx: Math.cos(ang)*sp,
+        vy: Math.sin(ang)*sp,
+        g: rand(0.06, 0.16),
+        r: rand(1.8, 3.8),
+        life: rand(40, 85),
+        c: palette[(Math.random()*palette.length)|0],
+      });
+    }
+  }
+
+  function tick(){
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+
+    for(let i=particles.length-1;i>=0;i--){
+      const p = particles[i];
+      p.vy += p.g;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 1;
+
+      const a = Math.max(0, Math.min(1, p.life/70));
+      ctx.globalAlpha = a;
+      ctx.fillStyle = p.c;
+
+      // 小さな丸（花火の粒）
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fill();
+
+      if(p.life<=0 || p.y>innerHeight+60 || p.x<-60 || p.x>innerWidth+60){
+        particles.splice(i,1);
+      }
+    }
+
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+  // 周りをクリックで花火（メッセージ画面だけで反応）
+  window.addEventListener("pointerdown", (e)=>{
+    if(screenMsg.classList.contains("hidden")) return;
+    // 文字の上でもOK（どこでも花火）
+    fire(e.clientX, e.clientY, 150);
+  });
+
+
+secretBtn.addEventListener("click", ()=>{
+  giftPopup.classList.toggle("hidden");
+});
+</script>
+</body>
+</html>
